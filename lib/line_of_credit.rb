@@ -29,26 +29,6 @@ class CreditLine
     @days
   end
 
-  def charge(days_over_30_days, days)
-    if days_over_30_days >= 0
-      times_of_30, remainder_days = days_over_30_days.divmod(30)
-      calculate_payment(times_of_30)
-      @interest_charge += calculate_interest(remainder_days)
-      @days = remainder_days
-    else
-      @interest_charge += calculate_interest(days)
-      @days += days
-    end
-  end
-
-  def calculate_payment(times_of_30)
-    @payments_due += calculate_interest((30 - @days))
-    (0...times_of_30).each do
-      @payments_due += calculate_interest(30)
-    end
-    @payments_due += interest_charge
-  end
-
   def calculate_interest(days_of_interest)
     payments_due * apr / 100 / 365 * days_of_interest
   end
@@ -61,4 +41,24 @@ class CreditLine
   private
 
   attr_reader :payments_due, :credit_limit, :apr
+
+  def charge(days_over_30_days, days)
+    if days_over_30_days >= 0
+      months_past, remainder_days = days_over_30_days.divmod(30)
+      calculate_payment(months_past)
+      @interest_charge += calculate_interest(remainder_days)
+      @days = remainder_days
+    else
+      @interest_charge += calculate_interest(days)
+      @days += days
+    end
+  end
+
+  def calculate_payment(months)
+    @payments_due += calculate_interest((30 - @days))
+    (0...months).each do
+      @payments_due += calculate_interest(30)
+    end
+    @payments_due += interest_charge
+  end
 end

@@ -23,7 +23,7 @@ RSpec.describe CreditLine, 'line of credit' do
     expect(days).to equal(29)
   end
 
-  it 'can calculate_interest' do
+  it 'can calculate interest' do
     allow_any_instance_of(CreditLine).to receive(:payments_due).and_return(100)
     interest = line_of_credit.calculate_interest(30)
     expect(interest).to equal(2.8767123287671232)
